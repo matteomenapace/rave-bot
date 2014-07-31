@@ -1,0 +1,79 @@
+#!/usr/bin/env node
+
+var _ 				= require('underscore'),
+	colors 			= require('colors'), 
+
+	twitter 		= require('ntwitter'),
+	twitterConfig 	= require('./js/twitter.config'),
+	twitterBot 		= new twitter(twitterConfig.auth)
+
+// console.log(twitterConfig)	
+
+/*twitterBot.updateStatus(twitterConfig.test.text, function (error, data) 
+{
+	if (error) console.log(error)
+	else console.log(data)
+})*/
+
+/*twitterBot.getFollowersIds(twitterConfig.master.screenName, function(error, data) 
+{
+	if (error) console.log(error)
+	else console.log(data)
+})
+
+twitterBot.createFriendship('baddeo', function(error, data) 
+{
+	if (error) console.log(error)
+	else console.log(data)
+})*/
+
+console.log(('getting followers for @' + twitterConfig.master.screenName).blue)
+
+var userId = twitterConfig.test.userId,
+	screenName = twitterConfig.test.screenName
+
+twitterBot.getFollowersIds(twitterConfig.master.screenName, function(error, data) 
+{
+	if (error) console.log(('├ ' + error.data).red)
+	else 
+	{
+		console.log(data)
+
+		userId = Number(userId) // need to transform this into a number
+
+		if (_(data).contains(userId))
+		{
+			console.log(('├ @' + screenName + ' (id=' + userId + ') is following @' + twitterConfig.master.screenName).grey)
+			// this user is following us
+			// we can reply to them without getting suspended (hopefully)
+			/*var text = '@' + screenName + ' thanks for your tweet https://twitter.com/' + screenName + '/status/' + tweet.id
+			sendTweet(text, function(error, data)
+			{
+				if (error) console.log(('├ ' + error.data).red)
+				else
+				{
+					if (data.text) console.log(('├ REPLIED ' + data.text).blue)
+					else
+					{
+						// we haven't replied
+					}	
+				}
+			})*/
+		}
+		else
+		{
+			// this user is NOT following us
+			// let's follow them and hope they'll follow us back
+			console.log(('├ @' + screenName + ' (id=' + userId + ') is NOT following @' + twitterConfig.master.screenName).grey)
+			/*console.log(('├ TRYING TO FOLLOW @' + screenName).grey)
+			twitterBot.createFriendship(screenName, function(error, data) 
+			{
+				if (error) console.log(('├ ' + error.data).red)
+				else 
+				{
+					console.log(('├ FOLLOWED @' + data.screen_name).blue)
+				}	
+			})*/
+		}	
+	}	
+})

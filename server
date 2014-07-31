@@ -1,0 +1,314 @@
+#!/usr/bin/env node
+
+// remember to start the noodle server before running this
+// TODO add a console log for forgetful people :)
+
+var _ = 			require('underscore'),
+	Firebase = 		require('firebase'),
+	prompt = 		require('prompt'),
+	twitter = 		require('ntwitter'),
+	S = 			require('string'),
+	// $ = 			require('jquery'),
+	config = 		require('./js/config'),
+	twitterConfig = require('./js/twitter.config'),
+	app = 			require('./js/app')
+
+// colour-coded console outputs
+
+	require('colors') 	 
+
+	/*
+
+		var colors = require('colors') 	 
+		colors.setTheme(
+		{
+			silly: 'rainbow',
+			input: 'grey',
+			verbose: 'cyan',
+			prompt: 'grey',
+			info: 'green',
+			data: 'grey',
+			help: 'cyan',
+			warn: 'yellow',
+			debug: 'blue',
+			error: 'red'
+		})
+	*/
+
+function fetchTweetsFromTwitter(parameters, recursively)
+{
+	console.log(('fetchTweetsFromTwitter ' + new Date().toString()).green)
+
+	app.fetchTweetsFromTwitter(parameters, function(error, tweets)
+	{
+		if (error)
+		{
+			console.log(error)
+		}
+		else
+		{
+			console.log(('├ fetched ' + tweets.length + ' tweets').green)
+
+			_(tweets).each(function(tweet)
+			{
+				var params = 
+				{
+					tweet: tweet, 
+					config: parameters.config
+				}
+
+				ensureTweet(params, function(error, tweet)
+				{
+					if (error)
+					{
+						console.log(error)
+					}	
+					else
+					{
+						var shortenedText = S(tweet.text).truncate(60).s
+						if (tweet.cls == 'new') 
+						{
+							console.log(('├ SAVED @' + tweet.user['screen-name'] + ': "' + tweet.text + '" ' + tweet.id).green)
+							
+							if (parameters.config.replyToNewTweets) replyToTweet(tweet)
+
+							// TODO update their profile data?
+						} 
+						else console.log(('├ IGNORED @' + tweet.user['screen-name'] + ': "' + shortenedText + '" ' + tweet.id).grey)	
+					}	
+				})
+			})
+		}
+
+		// this will set a new timeout to call the function itself recursively
+		if (recursively) setTimeout(fetchTweetsFromTwitter, config.fetchTweetsFromTwitterInterval, parameters, recursively)
+	})
+}
+
+function ensureTweet(parameters, callback)
+{
+	var url = parameters.config.firebaseUrl + parameters.config.firebaseTweetsPath + '/' + parameters.tweet.id
+
+	parameters.fb = new Firebase(url)
+
+	// need to authenticate the Firebase data reference
+	parameters.fb.auth(firebaseSecret)	
+
+	app._ensureTweet(parameters, callback)
+}		
+
+function startFetchingTweetsFromTwitter()
+{
+	fetchTweetsFromTwitter(parameters, true)
+}
+
+function testTimeout(parameters)
+{
+	console.log('testTimeout ' + new Date().toString())
+	// console.log(parameters)
+
+	// this will set a new timeout to call the function itself recursively
+	setTimeout(testTimeout, config.fetchTweetsFromTwitterInterval, parameters)
+}
+
+function promptUser(callback)
+{
+	prompt.start()
+
+	var properties = 
+	[
+		{
+			name: 			'firebaseTweetsPath',
+			description: 	'Enter the firebaseTweetsPath (eg: "tweets" or "test-tweets")',     // Prompt displayed to the user. If not supplied default will be used.
+			type: 			'string',
+			default: 		config.firebaseTweetsPath,
+		},
+		{
+			name: 			'hashtag',
+			description: 	'Enter the hashtag you want to get tweets for',     // Prompt displayed to the user. If not supplied default will be used.
+			type: 			'string',
+			default: 		config.hashtag,
+		},
+		{
+			name: 			'replyToNewTweets',
+			description: 	'Reply to newly saved tweets (true/false)',     // Prompt displayed to the user. If not supplied default will be used.
+			type: 			'string',
+			default: 		config.replyToNewTweets,
+		}
+	]
+
+	prompt.get(properties, function (error, result) 
+	{
+		if (error) 
+		{ 
+			// console.log(error)
+			callback(error)
+		}
+		else
+		{
+			callback(null, result)	
+		}
+	})
+}
+
+function initAuth(callback)
+{
+	promptUser(function(error, firebaseSecret)
+	{
+		if (error)
+		{
+			// TODO
+			callback(error)
+		}
+		else
+		{
+			var FirebaseTokenGenerator = require('firebase-token-generator'),
+				tokenGenerator = new FirebaseTokenGenerator(firebaseSecret),
+				token = tokenGenerator.createToken({}, {admin: true, debug: true, expires: 3 * 24 * 60 * 60})
+
+			callback(null, token)	
+		}	
+	})
+}
+
+function init()
+{
+	initTwitterBot()
+
+	promptUser(function(error, result)	
+	{
+		if (error)
+		{
+			console.log(error)
+		}
+		else
+		{
+			// if (result.firebaseSecret != '') 			firebaseSecret = result.firebaseSecret
+			if (result.hashtag != '') 					parameters.hashtag = result.hashtag
+			if (result.firebaseTweetsPath != '') 		parameters.config.firebaseTweetsPath = result.firebaseTweetsPath
+			if (result.replyToNewTweets != '') 			parameters.config.replyToNewTweets = (result.replyToNewTweets === 'true')	
+
+			startFetchingTweetsFromTwitter()
+			// fetchTweetsFromTwitter(parameters) // test single fetch
+		}	
+	})
+}
+
+/*
+ 	nTwitter
+	from https://github.com/AvianFlu/ntwitter
+*/
+
+function initTwitterBot()
+{
+	twitterBot = new twitter(twitterConfig.auth)
+}
+
+function sendTweet(text, callback)	
+{
+	twitterBot.updateStatus(text, function (error, data) 
+	{
+		if (error) callback(error)
+		else callback(null, data)
+	})
+}
+
+function testTweet()
+{
+	initTwitterBot()
+
+	sendTweet(twitterConfig.test.text, function(error, data)
+	{
+		if (error) console.log(error)
+		else console.log(data)
+	})
+}
+
+function replyToTweet(tweet, callback)
+{
+	/*var params =
+	{
+		config: parameters.config,
+		id: tweet.user.id
+	}*/
+
+	// console.log('replyToTweet ' + params.id)
+
+	// TODO complex logic, for now we just reply back
+	
+	var screenName = tweet.user['screen-name'],
+		userId = tweet.user.id
+
+	if (_(twitterConfig.noReplyUsers).contains(screenName))
+	{
+		// don't tweet back if the screenName is part of the no-reply list
+		console.log(('├ @' + screenName + ' is part of the no-reply list').red)
+	}	
+	else
+	{
+		// make sure that we only reply to followers
+
+		twitterBot.getFollowersIds(twitterConfig.master.screenName, function(error, data) 
+		{
+			if (error) console.log(('├ ' + error.data).red)
+			else 
+			{
+				// the Twitter API returns an array of Numbers (data)
+				// need to transform userId into a Number
+				userId = Number(userId) 
+
+				if (_(data).contains(userId))
+				{
+					// this user is following us
+					console.log(('├ @' + screenName + ' (id=' + userId + ') is following @' + twitterConfig.master.screenName).grey)
+
+					// we can reply to them without getting suspended by Twitter (hopefully)
+					var text = '@' + screenName + ' thanks for your tweet https://twitter.com/' + screenName + '/status/' + tweet.id
+					sendTweet(text, function(error, data)
+					{
+						if (error) console.log(('├ ' + error.data).red)
+						else
+						{
+							if (data.text) console.log(('├ REPLIED ' + data.text).blue)
+							else
+							{
+								// we haven't replied
+							}	
+						}
+					})
+				}
+				else
+				{
+					// this user is NOT following us
+					console.log(('├ @' + screenName + ' (id=' + userId + ') is NOT following @' + twitterConfig.master.screenName).grey)
+
+					// let's follow them and hope they'll follow us back
+					console.log(('├ TRYING TO FOLLOW @' + screenName).grey)
+					twitterBot.createFriendship(screenName, function(error, data) 
+					{
+						if (error) console.log(('├ ' + error.data).red)
+						else 
+						{
+							console.log(('├ FOLLOWED @' + data.screen_name).blue)
+						}	
+					})
+				}	
+			}	
+		})	
+	}	
+}
+
+// RUN
+
+var parameters = 
+{
+	hashtag: 	config.hashtag,
+	config: 	config
+}
+
+var firebaseSecret = config.firebaseSecret,
+	twitterBot = null
+
+init()
+// testTweet()
+
