@@ -22,7 +22,7 @@ What's this *bot* in a nutshell?
 
 #### Step 2 → Installing Noodle
 
-![](instructions/terminal.png "Drag a folder onto the Terminal")
+![](http://i.imgur.com/xPMuRK0.png "Drag a folder onto the Terminal")
 
 1. Open Terminal (or the equivalent command-line tool for Windows) 
 2. Navigate to this project's folder (on a Mac, you can do that by dragging a folder onto the Terminal icon in the dock)
@@ -40,7 +40,7 @@ What's this *bot* in a nutshell?
 You will end up with two Terminal windows: one running the *bot*, and the other running *Noodle* (see below).
 
 
-![](instructions/bot+noodle.png "Success! If your Terminal windows look like this you have Noodle running, and the bot ready to archive tweets")
+![](http://i.imgur.com/EdAcO2c.png "Success! If your Terminal windows look like this you have Noodle running, and the bot ready to archive tweets")
 
 
 ##Configuring the Twitter bot
