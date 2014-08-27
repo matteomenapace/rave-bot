@@ -7,6 +7,7 @@ What's this *bot* in a nutshell?
 * Twitter-bot to reply/poke players (be careful though, Twitter may suspend your account if you abuse this feature)
 
 
+
 ##Requirements
 
 * [Node.js](http://nodejs.org/download/) installed on the machine where you're going to run the bot
@@ -14,7 +15,6 @@ What's this *bot* in a nutshell?
 * A [Firebase app](https://www.firebase.com/account/) ready to accept data
 * To have the *bot* sending out tweets, you'll need an *app* from [https://apps.twitter.com/](https://apps.twitter.com/) which provides the authentication keys required
 
-##Installation
 
 #### Step 1 → Installing Node.js
 1. To start, make sure you have **Node.js** installed ([download it here](http://nodejs.org/download/)), 
@@ -40,7 +40,7 @@ What's this *bot* in a nutshell?
 You will end up with two Terminal windows: one running the *bot*, and the other running *Noodle* (see below).
 
 
-![](instructions/bot+noodle.png "Drag a folder onto the Terminal")
+![](instructions/bot+noodle.png "Success! If your Terminal windows look like this you have Noodle running, and the bot ready to archive tweets")
 
 
 ##Configuring the Twitter bot
