@@ -9,28 +9,31 @@ What's this in a nutshell?
 * Twitter-bot to reply/poke players (be careful though, Twitter may suspend your account if you abuse this feature)
 * Real-time leaderboard
 
+
 ##Requirements
 
 * [Node.js](http://nodejs.org/download/) installed on the machine where you're going to run the bot
-* [Noodle.js](http://noodlejs.com/#download) installed and running on the same machine
+* [Noodle.js](http://noodlejs.com/#download) installed and running on the same machine (Noodle is used to scrape Twitter, bypassing the restrictions of the Twitter API)
 * A [Firebase app](https://www.firebase.com/account/) ready to accept data
 * To have a bot sending out tweets, you'll need an *app* from https://apps.twitter.com/ which provides the authentication keys required (we have one already set up https://apps.twitter.com/app/6575811/)
 
+
 ##Installation
 
-Work in progress, proceed at your own risk..
-
-1. To start, make sure you have **Node.js** installed ([download it here](http://nodejs.org/download/)), and **npm** too ([follow these instructions](http://blog.nodejitsu.com/npm-cheatsheet/#Installing_npm)).
-2. Then install **Noodle.js** ([follow these instructions](http://noodlejs.com/#Server-quick-start))
+1. To start, make sure you have **Node.js** installed ([download it here](http://nodejs.org/download/)), 
+2. Install **npm** ([follow these instructions](http://blog.nodejitsu.com/npm-cheatsheet/#Installing_npm)).
 3. Open Terminal (or the equivalent command-line tool for Windows) and navigate to this project's folder
+5. `git clone https://github.com/dharmafly/noodle.git`
+6. `cd noodle`
+7. `npm install` (You may have to use `sudo npm install` if you get errors)
+8. `bin/noodle-server` to start the Noodle server
+3. Open a new Terminal window (or the equivalent command-line tool for Windows) and navigate to this project's folder
 4. `npm install` to install the necessary node_modules ([learn more about Node.js modules](http://nodejs.org/docs/v0.4.1/api/modules.html))
 5. `node server` to start the Twitter-scraper
 
-##Starting Noodle JS
 
-1. Install **Noodle.js** ([follow these instructions](http://noodlejs.com/#Server-quick-start))
-2. Open Terminal (or the equivalent command-line tool for Windows) and navigate to Noodle's `bin` folder
-3. `node noodle-server` to start the Noodle server
+
+
 
 
 ##Setting up the Twitter bot
