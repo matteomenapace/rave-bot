@@ -1,45 +1,54 @@
 #Hello human!
 
-What's this in a nutshell?
+What's this *bot* in a nutshell? 
 
-
-##Features
 * Configurable Twitter-scraper: filter by #hashtag and/or @username
 * Archive tweets w/ pictures, links, mentions, hashtags & geodata to a [Firebase](https://www.firebase.com/) database (but it could be any db that accepts JSON)
 * Twitter-bot to reply/poke players (be careful though, Twitter may suspend your account if you abuse this feature)
-* Real-time leaderboard
+
 
 ##Requirements
 
 * [Node.js](http://nodejs.org/download/) installed on the machine where you're going to run the bot
-* [Noodle.js](http://noodlejs.com/#download) installed and running on the same machine
+* [Noodle.js](http://noodlejs.com/#download) installed and running on the same machine (Noodle is used to scrape Twitter, bypassing the restrictions of the Twitter API)
 * A [Firebase app](https://www.firebase.com/account/) ready to accept data
-* To have a bot sending out tweets, you'll need an *app* from https://apps.twitter.com/ which provides the authentication keys required (we have one already set up https://apps.twitter.com/app/6575811/)
+* To have the *bot* sending out tweets, you'll need an *app* from [https://apps.twitter.com/](https://apps.twitter.com/) which provides the authentication keys required
 
 ##Installation
 
-Work in progress, proceed at your own risk..
+#### Step 1 → Installing Node.js
+1. To start, make sure you have **Node.js** installed ([download it here](http://nodejs.org/download/)), 
+2. Install **npm** ([follow these instructions](http://blog.nodejitsu.com/npm-cheatsheet/#Installing_npm)).
 
-1. To start, make sure you have **Node.js** installed ([download it here](http://nodejs.org/download/)), and **npm** too ([follow these instructions](http://blog.nodejitsu.com/npm-cheatsheet/#Installing_npm)).
-2. Then install **Noodle.js** ([follow these instructions](http://noodlejs.com/#Server-quick-start))
-3. Open Terminal (or the equivalent command-line tool for Windows) and navigate to this project's folder
-4. `npm install` to install the necessary node_modules ([learn more about Node.js modules](http://nodejs.org/docs/v0.4.1/api/modules.html))
-5. `node server` to start the Twitter-scraper
+#### Step 2 → Installing Noodle
 
-##Starting Noodle JS
+![](instructions/terminal.png "Drag a folder onto the Terminal")
 
-1. Install **Noodle.js** ([follow these instructions](http://noodlejs.com/#Server-quick-start))
-2. Open Terminal (or the equivalent command-line tool for Windows) and navigate to Noodle's `bin` folder
-3. `node noodle-server` to start the Noodle server
+1. Open Terminal (or the equivalent command-line tool for Windows) 
+2. Navigate to this project's folder (on a Mac, you can do that by dragging a folder onto the Terminal icon in the dock)
+5. Type in `git clone https://github.com/dharmafly/noodle.git` and press *Enter* to run the command
+6. `cd noodle`
+7. `npm install` (You may have to use `sudo npm install` if you get errors)
+8. `bin/noodle-server` to start the Noodle server
 
 
-##Setting up the Twitter bot
+#### Step 3 → Installing the *bot*
+1. Open a **new Terminal window** (or the equivalent command-line tool for Windows) and navigate to this project's folder 
+2. `npm install` to install the necessary node_modules ([learn more about Node.js modules](http://nodejs.org/docs/v0.4.1/api/modules.html))
+5. `node server` to start the *bot*
+
+You will end up with two Terminal windows: one running the *bot*, and the other running *Noodle* (see below).
+
+
+![](instructions/bot+noodle.png "Drag a folder onto the Terminal")
+
+
+##Configuring the Twitter bot
 
 1. Open `/js/libraries/twitter.auth.js`
-2. Make sure that the API key, API secret, Access token and Access token secret are set correctly (copy the values from https://apps.twitter.com/app/6575811/keys) in *exports.auth*
-2. If necessary change the value of the *text* string in *exports.testTweet* so that it contains a @twitterName that you can check (change @TableOneTrail to your username for example), remember to save your edits
+2. Make sure that the API key, API secret, Access token and Access token secret are set correctly in *exports.auth*
+2. If necessary change the value of the *text* string in *exports.testTweet* so that it contains a @twitterName that you can check, and remember to save your edits
 3. Open Terminal (or the equivalent command-line tool for Windows) and navigate to this project's folder
-4. `npm install` to install the necessary node_modules ([learn more about Node.js modules](http://nodejs.org/docs/v0.4.1/api/modules.html))
 5. `node tweet` to test the Twitter bot
 
 ###Troubleshooting
@@ -55,10 +64,5 @@ Work in progress, proceed at your own risk..
         { [Error: HTTP Error 403: Forbidden, API message: {"errors":[{"code":187,"message":"Status is a duplicate."}]}]  data: '{"errors":[{"code":187,"message":"Status is a duplicate."}]}', statusCode: 403 }
         
    Open `/js/libraries/twitter.auth.js` and change the value of the *text* string in *exports.testTweet*
-   
-   
-   
-##To sort out
-
-Make sure App.config.replyToNewTweets = true in `/js/libraries/config.js`   
+     
 
