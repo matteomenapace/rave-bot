@@ -40,7 +40,7 @@ What's this *bot* in a nutshell?
 You will end up with two Terminal windows: one running the *bot*, and the other running *Noodle* (see below).
 
 
-![](http://i.imgur.com/EdAcO2c.png "Success! If your Terminal windows look like this you have Noodle running, and the bot ready to archive tweets")
+![](http://i.imgur.com/EdAcO2c.png "Success! If your Terminal windows look like this you have Noodle running, and the bot ready to archive tweets :)")
 
 
 ##Configuring the Twitter bot

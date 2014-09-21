@@ -246,7 +246,7 @@ function replyToTweet(tweet, callback)
 	}	
 	else
 	{
-		// make sure that we only reply to followers
+		// make sure we only reply to followers
 
 		twitterBot.getFollowersIds(twitterConfig.master.screenName, function(error, data) 
 		{
