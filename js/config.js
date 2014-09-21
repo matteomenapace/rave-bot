@@ -10,10 +10,10 @@ App.config = App.config || {}
 
 App.config.firebaseUrl = 'https://vivid-fire-3575.firebaseio.com/'
 App.config.firebaseSecret = 'lpXdLC2nfIuGZN4XpKpcd70kksTmWnpvRpaglMWl'
-App.config.firebaseTweetsPath = 'ravedztest-tweets'
+App.config.firebaseTweetsPath = 'ravedz-he'
 App.config.firebaseUsersPath = 'ravedztest-users'
 
-App.config.hashtag = 'ravedztest' // you can try also 'nosleep' (high frequency)
+App.config.hashtag = 'ravedz' // you can try also 'nosleep' (high frequency)
 
 App.config.noodleUrl = 'http://localhost:8888/' // 'http://example.noodlejs.com/'
 
